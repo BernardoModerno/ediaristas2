@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html th:replace="~{adminlte3 :: layout (~{::title}, ~{::main}, _, _)}">
+
 <head>
   <title>Formulário de Serviço</title>
 </head>
+
 <body>
   <main>
     <div class="row">
@@ -13,7 +15,7 @@
           </div>
           <div class="card-body">
 
-            <form method="POST" th:object="${servico}">
+            <form method="POST" th:object="${form}">
 
               <div class="row">
                 <div class="col-md-6 col-sm-12">
@@ -165,10 +167,11 @@
 
             </form>
 
-          </div>  
+          </div>
         </div>
       </div>
     </div>
   </main>
 </body>
+
 </html>
