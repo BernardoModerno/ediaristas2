@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.admin.ediaristas.core.enums.Icone;
-import com.admin.ediaristas.core.repositories.ServicoRepository;
 import com.admin.ediaristas.web.dtos.ServicoForm;
-import com.admin.ediaristas.web.mappers.WebServicoMapper;
+import com.admin.ediaristas.web.services.WebServicoService;
 
 @Controller
 @RequestMapping("/admin/servicos")
