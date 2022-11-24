@@ -17,6 +17,7 @@ import br.com.treinaweb.ediaristas.core.repositories.UsuarioRepository;
 import br.com.treinaweb.ediaristas.web.dtos.AlterarSenhaForm;
 import br.com.treinaweb.ediaristas.web.dtos.UsuarioCadastroForm;
 import br.com.treinaweb.ediaristas.web.dtos.UsuarioEdicaoForm;
+import br.com.treinaweb.ediaristas.web.interfaces.IConfirmacaoSenha;
 import br.com.treinaweb.ediaristas.web.mappers.WebUsuarioMapper;
 
 @Service
@@ -36,15 +37,7 @@ public class WebUsuarioService {
     }
 
     public Usuario cadastrar(UsuarioCadastroForm form) {
-        var senha = form.getSenha();
-        var confirmacaoSenha = form.getConfirmacaoSenha();
-
-        if (!senha.equals(confirmacaoSenha)) {
-            var mensagem = "Os dois campos de senha não conferem";
-            var fieldError = new FieldError(form.getClass().getName(), "confirmacaoSenha", form.getConfirmacaoSenha(), false, null, null, mensagem);
-
-            throw new SenhasNaoConferemException(mensagem, fieldError);
-        }
+        validarConfirmacaoSenha(form);
 
         var model = mapper.toModel(form);
 
@@ -62,14 +55,14 @@ public class WebUsuarioService {
         var mensagem = String.format("Usuário com ID %d não encontrado", id);
 
         return repository.findById(id)
-            .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
     }
 
     public Usuario buscarPorEmail(String email) {
         var mensagem = String.format("Usuário com email %s não encontrado", email);
 
         return repository.findByEmail(email)
-            .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
     }
 
     public UsuarioEdicaoForm buscarFormPorId(Long id) {
@@ -100,21 +93,16 @@ public class WebUsuarioService {
     public void alterarSenha(AlterarSenhaForm form, String email) {
         var usuario = buscarPorEmail(email);
 
+        validarConfirmacaoSenha(form);
+
         var senhaAtual = usuario.getSenha();
         var senhaAntiga = form.getSenhaAntiga();
         var senha = form.getSenha();
-        var confirmacaoSenha = form.getConfirmacaoSenha();
-
-        if (!senha.equals(confirmacaoSenha)) {
-            var mensagem = "Os dois campos de senha não conferem";
-            var fieldError = new FieldError(form.getClass().getName(), "confirmacaoSenha", form.getConfirmacaoSenha(), false, null, null, mensagem);
-
-            throw new SenhasNaoConferemException(mensagem, fieldError);
-        }
 
         if (!passwordEncoder.matches(senhaAntiga, senhaAtual)) {
             var mensagem = "A senha antiga está incorreta";
-            var fieldError = new FieldError(form.getClass().getName(), "senhaAntiga", senhaAntiga, false, null, null, mensagem);
+            var fieldError = new FieldError(form.getClass().getName(), "senhaAntiga", senhaAntiga, false, null, null,
+                    mensagem);
 
             throw new SenhaIncorretaException(mensagem, fieldError);
         }
@@ -124,13 +112,27 @@ public class WebUsuarioService {
         repository.save(usuario);
     }
 
+    private void validarConfirmacaoSenha(IConfirmacaoSenha obj) {
+        var senha = obj.getSenha();
+        var confirmacaoSenha = obj.getConfirmacaoSenha();
+
+        if (!senha.equals(confirmacaoSenha)) {
+            var mensagem = "Os dois campos de senha não conferem";
+            var fieldError = new FieldError(obj.getClass().getName(), "confirmacaoSenha", obj.getConfirmacaoSenha(),
+                    false, null, null, mensagem);
+
+            throw new SenhasNaoConferemException(mensagem, fieldError);
+        }
+    }
+
     private void validarCamposUnicos(Usuario usuario) {
         if (repository.isEmailJaCadastrado(usuario.getEmail(), usuario.getId())) {
             var mensagem = "Já existe um usuário cadastrado com esse e-mail";
-            var fieldError = new FieldError(usuario.getClass().getName(), "email", usuario.getEmail(), false, null, null, mensagem);
-    
+            var fieldError = new FieldError(usuario.getClass().getName(), "email", usuario.getEmail(), false, null,
+                    null, mensagem);
+
             throw new UsuarioJaCadastradoException(mensagem, fieldError);
         }
     }
-    
+
 }
