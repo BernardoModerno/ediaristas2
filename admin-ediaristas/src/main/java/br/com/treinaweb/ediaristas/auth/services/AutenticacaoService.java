@@ -20,8 +20,8 @@ public class AutenticacaoService implements UserDetailsService {
         var mensagem = String.format("Usuário com email %s não encontrado", email);
 
         return repository.findByEmail(email)
-                .map(UsuarioAutenticado::new)
-                .orElseThrow(() -> new UsernameNotFoundException(mensagem));
+            .map(UsuarioAutenticado::new)
+            .orElseThrow(() -> new UsernameNotFoundException(mensagem));
     }
-
+    
 }
