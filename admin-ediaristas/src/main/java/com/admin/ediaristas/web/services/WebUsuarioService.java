@@ -10,6 +10,7 @@ import com.admin.ediaristas.core.exceptions.UsuarioNaoEncontradoException;
 import com.admin.ediaristas.core.models.Usuario;
 import com.admin.ediaristas.core.repositories.UsuarioRepository;
 import com.admin.ediaristas.web.dtos.UsuarioCadastroForm;
+import com.admin.ediaristas.web.dtos.UsuarioEdicaoForm;
 import com.admin.ediaristas.web.mappers.WebUsuarioMapper;
 
 @Service
@@ -38,6 +39,12 @@ public class WebUsuarioService {
 
         return repository.findById(id)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException(mensagem));
+    }
+
+    public UsuarioEdicaoForm buscarFormPorId(Long id) {
+        var usuario = buscarPorId(id);
+
+        return mapper.toForm(usuario);
     }
 
     public void excluirPorId(Long id) {
