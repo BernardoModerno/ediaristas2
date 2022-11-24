@@ -3,7 +3,7 @@ package br.com.treinaweb.ediaristas.core.exceptions;
 import org.springframework.validation.FieldError;
 
 public class ValidacaoException extends RuntimeException {
-
+    
     private FieldError fieldError;
 
     public ValidacaoException(String message, FieldError fieldError) {

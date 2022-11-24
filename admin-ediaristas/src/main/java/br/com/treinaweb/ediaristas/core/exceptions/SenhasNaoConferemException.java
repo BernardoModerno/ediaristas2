@@ -7,5 +7,5 @@ public class SenhasNaoConferemException extends ValidacaoException {
     public SenhasNaoConferemException(String message, FieldError fieldError) {
         super(message, fieldError);
     }
-
+    
 }

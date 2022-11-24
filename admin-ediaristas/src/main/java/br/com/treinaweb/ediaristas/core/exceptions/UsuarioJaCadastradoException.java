@@ -7,5 +7,5 @@ public class UsuarioJaCadastradoException extends ValidacaoException {
     public UsuarioJaCadastradoException(String message, FieldError fieldError) {
         super(message, fieldError);
     }
-
+    
 }
