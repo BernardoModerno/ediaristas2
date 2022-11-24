@@ -18,6 +18,8 @@ import com.admin.ediaristas.web.dtos.UsuarioCadastroForm;
 import com.admin.ediaristas.web.dtos.UsuarioEdicaoForm;
 import com.admin.ediaristas.web.services.WebUsuarioService;
 
+import br.com.treinaweb.ediaristas.core.exceptions.SenhasNaoConferemException;
+
 @Controller
 @RequestMapping("/admin/usuarios")
 public class UsuarioController {
@@ -52,8 +54,13 @@ public class UsuarioController {
             return "admin/usuario/cadastro-form";
         }
 
-        service.cadastrar(cadastroForm);
-        attrs.addFlashAttribute("alert", new FlashMessage("alert-succes", "Usuário cadastrado com sucesso!"));
+        try {
+            service.cadastrar(cadastroForm);
+            attrs.addFlashAttribute("alert", new FlashMessage("alert-success", "Usuário cadastrado com sucesso!"));
+        } catch (SenhasNaoConferemException e) {
+            result.addError(e.getFieldError());
+            return "admin/usuario/cadastro-form";
+        }
 
         return "redirect:/admin/usuarios";
     }
