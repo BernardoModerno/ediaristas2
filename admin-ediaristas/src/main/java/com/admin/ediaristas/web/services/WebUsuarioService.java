@@ -15,6 +15,7 @@ import com.admin.ediaristas.web.dtos.UsuarioEdicaoForm;
 import com.admin.ediaristas.web.mappers.WebUsuarioMapper;
 
 import br.com.treinaweb.ediaristas.core.exceptions.SenhasNaoConferemException;
+import br.com.treinaweb.ediaristas.core.exceptions.UsuarioJaCadastradoException;
 
 @Service
 public class WebUsuarioService {
@@ -45,6 +46,8 @@ public class WebUsuarioService {
 
         model.setTipoUsuario(TipoUsuario.ADMIN);
 
+        validarCamposUnicos(model);
+
         return repository.save(model);
     }
 
@@ -69,6 +72,8 @@ public class WebUsuarioService {
         model.setSenha(usuario.getSenha());
         model.setTipoUsuario(usuario.getTipoUsuario());
 
+        validarCamposUnicos(model);
+
         return repository.save(model);
     }
 
@@ -76,6 +81,19 @@ public class WebUsuarioService {
         var usuario = buscarPorId(id);
 
         repository.delete(usuario);
+    }
+
+    private void validarCamposUnicos(Usuario usuario) {
+        repository.findByEmail(usuario.getEmail()).ifPresent((usuarioEncontrado) -> {
+            if (!usuarioEncontrado.equals(usuario)) {
+                var mensagem = "Já existe um usuário cadastrado com esse e-mail";
+                var fieldError = new FieldError(usuario.getClass().getName(), "email", usuario.getEmail(), false, null,
+                        null, mensagem);
+
+                throw new UsuarioJaCadastradoException(mensagem, fieldError);
+
+            }
+        });
     }
 
 }
