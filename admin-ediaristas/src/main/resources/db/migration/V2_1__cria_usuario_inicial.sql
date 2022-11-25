@@ -1,8 +1,1 @@
-INSERT INTO `usuario`
-VALUES (
-        1,
-        'admin@mail.com',
-        'Usuário ADMIN',
-        '$2a$12$zA3b1harhRSBBdT/kGORW.0wMuS9JwIN4NnLFKgXlDFOwqoMp4tca',
-        'ADMIN'
-    );
+INSERT INTO `usuario` VALUES (1,'bernardo.moderno@mail.com','Usuário ADMIN','$2a$10$BxPzVFDiNk9UZoLvA00f.uPuyHJL7pUtq388UWDVPbNGejpf5YqMi','ADMIN');
